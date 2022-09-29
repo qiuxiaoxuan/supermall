@@ -1,0 +1,26 @@
+<template>
+  <SwiperRouter>
+    <!-- 根据获取到的数据循环遍历得到每一个小的轮播项目 -->
+    <SwiperItem v-for="item of banners" :key="item.acm">
+      <a :href="item.link"><img :src="item.image" alt="" /></a>
+    </SwiperItem>
+  </SwiperRouter>
+</template>
+<script>
+// 引入轮播图组件
+import { SwiperRouter, SwiperItem } from 'components/common/swiper';
+export default {
+  name: 'HomeSwiper',
+  props: {
+    banners: {
+      type: Array,
+      // 数组和对象的默认值需要设置为一个函数返回的数组或者对象
+      default: () => [],
+    },
+  },
+  components: {
+    SwiperRouter,
+    SwiperItem,
+  },
+};
+</script>

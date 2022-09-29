@@ -1,15 +1,22 @@
 <template>
   <div id="home">
     <NavBar class="home-nav"><div slot="center">购物街</div></NavBar>
+    <HomeSwiper :banners="banners" />
   </div>
 </template>
 <script>
+// 引入封装好的NavBar_导航栏组件
 import NavBar from 'components/common/navbar/NavBar';
+// 引入封装home中网络请求的组件
 import { getHomeMultidata } from 'network/home';
+// 引入home轮播图子组件
+import HomeSwiper from './childComps/HomeSwiper.vue';
+
 export default {
   name: 'HomeRouter',
   components: {
     NavBar,
+    HomeSwiper,
   },
   data() {
     return {
