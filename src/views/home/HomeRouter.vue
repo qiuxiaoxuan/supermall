@@ -5,10 +5,28 @@
 </template>
 <script>
 import NavBar from 'components/common/navbar/NavBar';
+import { getHomeMultidata } from 'network/home';
 export default {
   name: 'HomeRouter',
   components: {
     NavBar,
+  },
+  data() {
+    return {
+      // 创建一个变量用于保存请求过来的数据
+      banners: [],
+      recommends: [],
+    };
+  },
+  created() {
+    // 1、请求多个数据
+    // 加小括号调用函数，因为最终是封装的axios，所以可以直接使用 .then 和.catch 方法
+    getHomeMultidata().then((response) => {
+      // 在生命周期中的this是vm实例，将请求到的数据保存到data中的数据中去
+      // 用一个不会被回收的变量引用了请求到的数据对象，防止在函数执行结束后response被回收而没有变量引用数据对象，使得数据对象被回收
+      this.banners = response.data.banner.list;
+      this.recommends = response.data.recommend.list;
+    });
   },
 };
 </script>
