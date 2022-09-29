@@ -14,6 +14,7 @@ export default {
 <style scoped>
 .slide {
   width: 100%;
+  /*  flex-shrink指定 flex 元素的收缩规则 */
   flex-shrink: 0;
 }
 
