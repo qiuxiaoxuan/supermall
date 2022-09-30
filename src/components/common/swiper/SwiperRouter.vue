@@ -15,6 +15,7 @@
       <slot name="indicator" v-if="showIndicator && slideCount > 1">
         <!-- 这里面是slot的默认内容 -->
         <!-- 动态绑定类名 active，达到高亮效果；条件是index等于currentIndex -->
+        <!-- ！！！这里的判断不知道为啥要写currentIndex -1;明明不减1页面的展示效果更加 -->
         <div
           v-for="index in slideCount"
           class="indi-item"
@@ -117,7 +118,6 @@ export default {
         }
         // 后面这个 else if 也不知道为啥也是一直不执行的，注释也没看到影响
         else if (this.currentIndex <= 0) {
-          console.log('xyu');
           this.currentIndex = this.slideCount;
           this.setTransform(-this.currentIndex * this.swiperWidth);
         }
