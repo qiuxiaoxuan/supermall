@@ -49,7 +49,7 @@ export default {
   padding: 6px;
 }
 .active {
-  color: var(--color-heigh-text);
+  color: var(--color-height-text);
   border-bottom: 3px solid var(--color-tint);
 }
 </style>

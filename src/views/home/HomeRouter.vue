@@ -190,7 +190,7 @@ export default {
   },
   deactivated() {
     // 离开组件  将离开组件时组件中滚动所在的位置保存到saveY中去
-    this.saveY = this.$refs.scroll.getScrollY();
+    this.saveY = this.$refs.scroll.scrollY;
   },
 };
 </script>

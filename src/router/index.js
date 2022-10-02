@@ -9,6 +9,7 @@ const HomeRouter = () => import('views/home/HomeRouter');
 const CategoryRouter = () => import('views/category/CategoryRouter');
 const ShopcartRouter = () => import('views/shopcart/ShopcartRouter');
 const ProfileRouter = () => import('views/profile/ProfileRouter');
+const DetailRouter = () => import('views/detail/DetailRouter');
 // 安装VueRouter
 Vue.use(VueRouter);
 
@@ -46,6 +47,10 @@ const routes = [
   {
     path: '/profile',
     component: ProfileRouter,
+  },
+  {
+    path: '/detail/:iid',
+    component: DetailRouter,
   },
 ];
 // 创建并暴露路由router

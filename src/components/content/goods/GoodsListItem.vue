@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-list-item">
+  <div class="goods-list-item" @click="itemClick">
     <img :src="item.show.img" alt="" @load="imageLoad" />
     <div class="item-info">
       <p>{{ item.title }}</p>
@@ -23,6 +23,10 @@ export default {
       // 加载完一张图片就触发一次事件
       // 触发绑定在全局事件总线上的自定义事件
       this.$bus.$emit('itemimageLoad');
+    },
+
+    itemClick() {
+      this.$router.push('/detail/' + this.item.iid);
     },
   },
 };
@@ -60,7 +64,7 @@ export default {
 }
 
 .item-info .price {
-  color: var(--color-heigh-text);
+  color: var(--color-height-text);
   margin-right: 20px;
 }
 
