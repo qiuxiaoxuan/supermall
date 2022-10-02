@@ -85,6 +85,7 @@ export default {
       isShowBackTop: false, // 回到顶部组件是否展示
       taboffsetTop: 0, // tabControl应该固定的位置，用于保存tabControl组件的offsetTop属性
       isTabFixed: false, // tabControl是否应该吸顶
+      saveY: 0, // 保存离开home组件的时候滚动停留的位置
     };
   },
   methods: {
@@ -179,6 +180,17 @@ export default {
     showGoods() {
       return this.goods[this.currentType].list;
     },
+  },
+  activated() {
+    // 组件活跃，进入组件
+    // 调用滚动对象中的scrollTo回到离开时的位置(saveY)
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
+    // 回来之后要进行一次刷新，防止一些小bug
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    // 离开组件  将离开组件时组件中滚动所在的位置保存到saveY中去
+    this.saveY = this.$refs.scroll.getScrollY();
   },
 };
 </script>

@@ -72,6 +72,10 @@ export default {
       // 滚动中重置滚动高度的方法
       this.scroll && this.scroll.refresh();
     },
+    getScrollY() {
+      // 获取滚动此时的位置Y
+      return this.scroll ? this.scroll.y : 0;
+    },
   },
 };
 </script>

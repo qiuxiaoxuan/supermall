@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view />
+    <!-- 让home组件不要随便销毁，keep-alive -->
+    <keep-alive>
+      <router-view />
+    </keep-alive>
     <MainTabBar />
   </div>
 </template>
