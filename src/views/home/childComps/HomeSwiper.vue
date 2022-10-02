@@ -1,8 +1,8 @@
 <template>
   <SwiperRouter>
     <!-- 根据获取到的数据循环遍历得到每一个小的轮播项目 -->
-    <!-- <SwiperItem v-for="item of banners" :key="item.acm"> -->
-    <SwiperItem v-for="(item, index) in banners" :key="index">
+    <!-- <SwiperItem v-for="(item, index) in banners" :key="index"> -->
+    <SwiperItem v-for="item of banners" :key="item.acm">
       <a :href="item.link"><img :src="item.image" alt="" /></a>
     </SwiperItem>
   </SwiperRouter>

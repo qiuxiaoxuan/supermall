@@ -4,8 +4,9 @@
       <span
         :class="{ active: index === currentIndex }"
         @click="itemClick(index)"
-        >{{ item }}</span
       >
+        {{ item }}
+      </span>
     </div>
   </div>
 </template>

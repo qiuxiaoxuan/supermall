@@ -1,15 +1,28 @@
 <template>
   <div id="home">
     <NavBar class="home-nav"><div slot="center">购物街</div></NavBar>
-    <HomeSwiper :banners="banners" />
-    <HomeRecommmendView :recommends="recommends" />
-    <HomeFeatureView />
-    <TabControl
-      class="tab-control"
-      @tabClick="tabClick"
-      :titles="['流行', '新款', '精选']"
-    />
-    <GoodsList :list="showGoods" />
+
+    <ScrollRouter
+      class="content"
+      ref="scroll"
+      :probe-type="3"
+      :pull-up-load="true"
+      @scroll="contentScroll"
+      @pullingUp="loadMore"
+    >
+      <HomeSwiper :banners="banners" />
+      <HomeRecommmendView :recommends="recommends" />
+      <HomeFeatureView />
+      <TabControl
+        class="tab-control"
+        @tabClick="tabClick"
+        :titles="['流行', '新款', '精选']"
+      />
+      <GoodsList :list="showGoods" />
+    </ScrollRouter>
+
+    <!-- 监听组件的原生事件在vue2中可以在后面加上  .native -->
+    <BackTop @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
 <script>
@@ -21,6 +34,10 @@ import NavBar from 'components/common/navbar/NavBar';
 import TabControl from 'components/content/tabControl/TabControl';
 // 引入封装好的商品展示列表
 import GoodsList from 'components/content/goods/GoodsList';
+// 引入封装好的滚动组件
+import ScrollRouter from 'components/common/scroll/ScrollRouter';
+// 引入回到顶部的组件
+import BackTop from 'components/content/backTop/BackTop';
 
 // 引入封装home中网络请求的组件
 import { getHomeMultidata, getHomeGoods } from 'network/home';
@@ -38,6 +55,8 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
+    ScrollRouter,
+    BackTop,
     HomeSwiper,
     HomeRecommmendView,
     HomeFeatureView,
@@ -54,13 +73,14 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
-      currentType: 'pop',
+      currentType: 'pop', // 保存当前所展示的选项卡
+      isShowBackTop: false,
     };
   },
   methods: {
     // 事件监听的方法
+    // 切换选项卡
     tabClick(index) {
-      console.log(index);
       // 因为不是数组，所以只能用Switch判断语句
       switch (index) {
         case 0:
@@ -73,6 +93,21 @@ export default {
           this.currentType = 'sell';
           break;
       }
+    },
+    // 回到顶部
+    backClick() {
+      // 在组件的$refs上可以访问到注册过的scroll拿到组件实例对象，然后访问这个实例上的方法scrollTo(滚动到的位置)
+      // 参数，滚动的终点的x，y坐标，以及滚动的时间
+      this.$refs.scroll.scrollTo(0, 0, 500);
+    },
+    // 监听滚动事件，判断回到顶部按钮是否展示是
+    contentScroll(position) {
+      this.isShowBackTop = -position.y > 1000;
+    },
+    // 监听上拉加载更多
+    loadMore() {
+      // 因为currentType记录着当前所展示的选项卡
+      this.getHomeGoods(this.currentType);
     },
 
     // 网络请求相关的方法
@@ -88,16 +123,15 @@ export default {
     getHomeGoods(type) {
       // 因为每次请求数据的时候，都会在上一次的基础上再请求30条数据，也就是page要加1
       const page = this.goods[type].page + 1;
-      getHomeGoods(type, page)
-        .then((response) => {
-          // 把请求到的商品数据push到list中去
-          this.goods[type].list.push(...response.data.list);
-          // 把页码的数值加1
-          this.goods[type].page++;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      getHomeGoods(type, page).then((response) => {
+        // 把请求到的商品数据push到list中去
+        this.goods[type].list.push(...response.data.list);
+        // 把页码的数值加1
+        this.goods[type].page++;
+
+        // 因为BScroll的上拉加载更多方法只能调用一次，所以需要调用finishPullUp重置
+        this.$refs.scroll.finishPullUp();
+      });
     },
   },
   created() {
@@ -121,6 +155,8 @@ export default {
 #home {
   /* 因为主页导航栏是固定定位，且优先级很高，就会遮住下面的盒子，所以给一个上内边距44(导航栏的高度) */
   padding-top: 44px;
+  height: 100vh;
+  position: relative;
 }
 .home-nav {
   /* 设置背景颜色，直接使用css中定义好的变量 */
@@ -139,4 +175,18 @@ export default {
   top: 44px;
   z-index: 9;
 }
+.content {
+  /* 确定滚动窗口的大小，第一种方式使用相对定位 */
+  overflow: hidden;
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
+}
+/* .content {
+  第二种方式，使用css3计算方式，父级盒子的100% 减去上面盒子的高再减去下面盒子的高
+  height: calc(100% - 93px);
+  margin-top: 44px;
+} */
 </style>
