@@ -3,7 +3,9 @@
     <!-- 根据获取到的数据循环遍历得到每一个小的轮播项目 -->
     <!-- <SwiperItem v-for="(item, index) in banners" :key="index"> -->
     <SwiperItem v-for="item of banners" :key="item.acm">
-      <a :href="item.link"><img :src="item.image" alt="" /></a>
+      <a :href="item.link"
+        ><img :src="item.image" alt="" @load="imageLoad"
+      /></a>
     </SwiperItem>
   </SwiperRouter>
 </template>
@@ -23,6 +25,19 @@ export default {
   components: {
     SwiperRouter,
     SwiperItem,
+  },
+  data() {
+    return {
+      isLoad: false, // 判断是否有轮播图加载完毕,只执行一次
+    };
+  },
+  methods: {
+    imageLoad() {
+      if (!this.isLoad) {
+        this.$emit('swiperImageLoad');
+        this.isLoad = true;
+      }
+    },
   },
 };
 </script>

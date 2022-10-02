@@ -1,21 +1,28 @@
 <template>
   <div id="home">
     <NavBar class="home-nav"><div slot="center">购物街</div></NavBar>
-
+    <TabControl
+      @tabClick="tabClick"
+      :titles="['流行', '新款', '精选']"
+      ref="tabControl1"
+      class="tab-control"
+      v-show="isTabFixed"
+    />
     <ScrollRouter
       class="content"
       ref="scroll"
       :probe-type="3"
       :pull-up-load="true"
       @scroll="contentScroll"
+      @pullingUp="loadMore"
     >
-      <HomeSwiper :banners="banners" />
+      <HomeSwiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
       <HomeRecommmendView :recommends="recommends" />
       <HomeFeatureView />
       <TabControl
-        class="tab-control"
         @tabClick="tabClick"
         :titles="['流行', '新款', '精选']"
+        ref="tabControl2"
       />
       <GoodsList :list="showGoods" />
     </ScrollRouter>
@@ -40,6 +47,8 @@ import BackTop from 'components/content/backTop/BackTop';
 
 // 引入封装home中网络请求的组件
 import { getHomeMultidata, getHomeGoods } from 'network/home';
+// 引入debounce防抖函数
+import { debounce } from 'common/utils';
 
 // 引入home轮播图子组件
 import HomeSwiper from './childComps/HomeSwiper.vue';
@@ -73,11 +82,14 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: 'pop', // 保存当前所展示的选项卡
-      isShowBackTop: false,
+      isShowBackTop: false, // 回到顶部组件是否展示
+      taboffsetTop: 0, // tabControl应该固定的位置，用于保存tabControl组件的offsetTop属性
+      isTabFixed: false, // tabControl是否应该吸顶
     };
   },
   methods: {
     // 事件监听的方法
+
     // 切换选项卡
     tabClick(index) {
       // 因为不是数组，所以只能用Switch判断语句
@@ -92,6 +104,9 @@ export default {
           this.currentType = 'sell';
           break;
       }
+      // 让两个tabControl的展示的选项一样
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     // 回到顶部
     backClick() {
@@ -101,8 +116,20 @@ export default {
     },
     // 监听滚动事件，判断回到顶部按钮是否展示是,自定义事件获取数据，$emit('scroll',传递数据)
     contentScroll(position) {
-      // 向下滚动为负数
+      // 1、判断BackTop是否显示，向下滚动为负数
       this.isShowBackTop = -position.y > 1000;
+      // 2、决定tabControl是否吸顶(position: fixed)
+      this.isTabFixed = -position.y > this.taboffsetTop;
+    },
+    // 监听滚动事件(自定义事件)
+    loadMore() {
+      this.getHomeGoods(this.currentType);
+    },
+    // 监听轮播图组件的图片是否加载完毕(自定义事件)
+    swiperImageLoad() {
+      // 获取tabControl的offsetTop属性
+      // 所有的组件都有一个属性$el:用于获取组件中的元素
+      this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
 
     // 网络请求相关的方法
@@ -123,6 +150,9 @@ export default {
         this.goods[type].list.push(...response.data.list);
         // 把页码的数值加1
         this.goods[type].page++;
+
+        // 完成上拉加载更多
+        this.$refs.scroll.finishPullUp();
       });
     },
   },
@@ -137,10 +167,12 @@ export default {
     this.getHomeGoods('pop');
     this.getHomeGoods('new');
     this.getHomeGoods('sell');
-
-    // 3、监听给$bus 绑定监听item图片加载完成的自定义事件
+  },
+  mounted() {
+    // 监听给$bus 绑定监听item图片加载完成的自定义事件
+    const refresh = debounce(this.$refs.scroll.refresh, 50);
     this.$bus.$on('itemimageLoad', () => {
-      this.$refs.scroll.refresh();
+      refresh();
     });
   },
   computed: {
@@ -153,7 +185,7 @@ export default {
 <style scoped>
 #home {
   /* 因为主页导航栏是固定定位，且优先级很高，就会遮住下面的盒子，所以给一个上内边距44(导航栏的高度) */
-  padding-top: 44px;
+  /* padding-top: 44px; */
   height: 100vh;
   position: relative;
 }
@@ -161,18 +193,13 @@ export default {
   /* 设置背景颜色，直接使用css中定义好的变量 */
   background-color: var(--color-tint);
   color: #fff;
-  position: fixed;
+  /* 在使用浏览器原生滚动时为了让导航栏不一起滚动而设置固定定位
+  但使用better-scroll之后就不需要了 */
+  /*  position: fixed;
   left: 0;
   right: 0;
   top: 0;
-  z-index: 9;
-}
-.tab-control {
-  /* 粘性定位元素（stickily positioned element）是计算后位置属性为 sticky 的元素。 */
-  /* 就是在没有到指定的定位的位置时是sticky属性，在到达指定位置后转变为fixed属性，兼容性不好 */
-  position: sticky;
-  top: 44px;
-  z-index: 9;
+  z-index: 9; */
 }
 .content {
   /* 确定滚动窗口的大小，第一种方式使用相对定位 */
@@ -188,4 +215,8 @@ export default {
   height: calc(100% - 93px);
   margin-top: 44px;
 } */
+.tab-control {
+  position: relative;
+  z-index: 9;
+}
 </style>

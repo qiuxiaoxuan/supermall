@@ -45,28 +45,32 @@ export default {
     });
 
     // 2、监听滚动的位置(监听滚动对象上的事件，在合适的地方触发自定义事件)
-    this.scroll.on('scroll', (position) => {
-      // 触发自定义事件，传递数据
-      this.$emit('scroll', position);
-    });
+    if (this.probeType === 2 || this.probeType === 3) {
+      this.scroll.on('scroll', (position) => {
+        // 触发自定义事件，传递数据
+        this.$emit('scroll', position);
+      });
+    }
 
     // 3、监听上拉事件
-    this.scroll.on('pullingUp', () => {
-      this.$emit('pullingUp');
-    });
+    if (this.pullUpLoad) {
+      this.scroll.on('pullingUp', () => {
+        this.$emit('pullingUp');
+      });
+    }
   },
   methods: {
     scrollTo(x, y, time = 300) {
       // 滚动中回到某个位置的方法
-      this.scroll.scrollTo(x, y, time);
+      this.scroll && this.scroll.scrollTo(x, y, time);
     },
     finishPullUp() {
       // 滚动中重置上拉加载的方法
-      this.scroll.finishPullUp();
+      this.scroll && this.scroll.finishPullUp();
     },
     refresh() {
       // 滚动中重置滚动高度的方法
-      this.scroll.refresh();
+      this.scroll && this.scroll.refresh();
     },
   },
 };
