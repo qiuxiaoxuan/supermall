@@ -62,15 +62,15 @@ export default {
   methods: {
     scrollTo(x, y, time = 300) {
       // 滚动中回到某个位置的方法
-      this.scroll && this.scroll.scrollTo(x, y, time);
+      this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time);
     },
     finishPullUp() {
       // 滚动中重置上拉加载的方法
-      this.scroll && this.scroll.finishPullUp();
+      this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp();
     },
     refresh() {
       // 滚动中重置滚动高度的方法
-      this.scroll && this.scroll.refresh();
+      this.scroll && this.scroll.refresh && this.scroll.refresh();
     },
   },
   computed: {
