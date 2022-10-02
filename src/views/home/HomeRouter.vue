@@ -8,7 +8,6 @@
       :probe-type="3"
       :pull-up-load="true"
       @scroll="contentScroll"
-      @pullingUp="loadMore"
     >
       <HomeSwiper :banners="banners" />
       <HomeRecommmendView :recommends="recommends" />
@@ -100,14 +99,10 @@ export default {
       // 参数，滚动的终点的x，y坐标，以及滚动的时间
       this.$refs.scroll.scrollTo(0, 0, 500);
     },
-    // 监听滚动事件，判断回到顶部按钮是否展示是
+    // 监听滚动事件，判断回到顶部按钮是否展示是,自定义事件获取数据，$emit('scroll',传递数据)
     contentScroll(position) {
+      // 向下滚动为负数
       this.isShowBackTop = -position.y > 1000;
-    },
-    // 监听上拉加载更多
-    loadMore() {
-      // 因为currentType记录着当前所展示的选项卡
-      this.getHomeGoods(this.currentType);
     },
 
     // 网络请求相关的方法
@@ -128,21 +123,25 @@ export default {
         this.goods[type].list.push(...response.data.list);
         // 把页码的数值加1
         this.goods[type].page++;
-
-        // 因为BScroll的上拉加载更多方法只能调用一次，所以需要调用finishPullUp重置
-        this.$refs.scroll.finishPullUp();
       });
     },
   },
   created() {
     // 在生命周期钩子中最好只是告诉别人你要做什么，具体的实现逻辑可以放到methods的方法中去实现
     // 而且封装之后可以实现代码的复用
+
     // 1、请求多个数据
     this.getHomeMultidata();
+
     // 2、分别请求不同类型的商品的数据
     this.getHomeGoods('pop');
     this.getHomeGoods('new');
     this.getHomeGoods('sell');
+
+    // 3、监听给$bus 绑定监听item图片加载完成的自定义事件
+    this.$bus.$on('itemimageLoad', () => {
+      this.$refs.scroll.refresh();
+    });
   },
   computed: {
     showGoods() {
