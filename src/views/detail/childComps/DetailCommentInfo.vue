@@ -33,6 +33,7 @@
 <script>
 import { formatDate } from 'common/utils';
 
+// 商品详情中的评论信息
 export default {
   name: 'DetailCommentInfo',
   props: {
@@ -42,6 +43,7 @@ export default {
     },
   },
   filters: {
+    // 过滤器
     showDate: function (value) {
       let date = new Date(value * 1000);
       return formatDate(date, 'yyyy-MM-dd');

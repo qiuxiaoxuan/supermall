@@ -32,6 +32,7 @@
 </template>
 
 <script>
+// 商品详情基础信息
 export default {
   name: 'DetailBaseInfo',
   props: {

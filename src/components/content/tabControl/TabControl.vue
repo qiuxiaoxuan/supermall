@@ -16,7 +16,7 @@ export default {
   name: 'TabControl',
   data() {
     return {
-      currentIndex: 0,
+      currentIndex: 0, // 保存当前选中的选项卡的index
     };
   },
   methods: {

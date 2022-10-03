@@ -1,6 +1,6 @@
 // 封装一个公共的工具类和公共的方法
-// 函数防抖,传递一个函数和一个时间
-export const debounce = (func, delay) => {
+// 1、函数防抖,传递一个函数和一个时间 (简单的说，当一个动作连续触发，只执行最后一次)
+export const debounce = (func, delay = 100) => {
   // 先定义一个变量用于保存定时器
   let timer = null;
   return (...args) => {
@@ -13,13 +13,29 @@ export const debounce = (func, delay) => {
   };
 };
 
+// 2、函数节流  限制一个函数在一定时间内只能执行一次
+export const throttle = (func, delay = 200) => {
+  let timer = null;
+  return (...args) => {
+    // 如果timer存在，就继续执行已经存在的timer
+    if (timer) return;
+    timer = setTimeout(() => {
+      func.apply(this, args);
+      timer = null;
+    }, delay);
+  };
+};
+
 export function formatDate(date, fmt) {
+  // 1、获取年份
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(
       RegExp.$1,
-      (date.getFullYear() + '').substr(4 - RegExp.$1.length)
+      (date.getFullYear() + '').substring(4 - RegExp.$1.length)
     );
   }
+  // 2、获取
+  // M+  正则的一个规则：+  表示一个或多个
   let o = {
     'M+': date.getMonth() + 1,
     'd+': date.getDate(),
@@ -39,5 +55,5 @@ export function formatDate(date, fmt) {
   return fmt;
 }
 function padLeftZero(str) {
-  return ('00' + str).substr(str.length);
+  return ('00' + str).substring(str.length);
 }

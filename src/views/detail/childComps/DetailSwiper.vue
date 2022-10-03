@@ -6,6 +6,7 @@
   </SwiperRouter>
 </template>
 <script>
+// 详情的轮播图
 import { SwiperRouter, SwiperItem } from 'components/common/swiper';
 export default {
   name: 'DetailSwiper',

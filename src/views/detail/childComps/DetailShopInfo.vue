@@ -40,6 +40,7 @@
 </template>
 
 <script>
+// 商品的店铺信息
 export default {
   name: 'DetailShopInfo',
   props: {

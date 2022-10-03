@@ -19,6 +19,7 @@
 </template>
 
 <script>
+// 商品的详细信息
 export default {
   name: 'DetailGoodsInfo',
   props: {
@@ -34,7 +35,7 @@ export default {
   },
   methods: {
     imgLoad() {
-      // 判断所有图片都加载完了才执行回调，执行一次
+      // 判断所有图片都加载完了才触发自定义事件，执行一次
       if (++this.counter === this.imagesLength) {
         this.$emit('imageLoad');
       }

@@ -7,7 +7,7 @@
       <div slot="center" class="title">
         <div
           v-for="(item, index) of titles"
-          :key="index"
+          :key="item"
           class="title-item"
           :class="{ active: currentIndex === index }"
           @click="titleClick(index)"
@@ -19,20 +19,24 @@
   </div>
 </template>
 <script>
+// 详情的导航栏
 import NavBar from 'components/common/navbar/NavBar';
 export default {
   name: 'DetailNavBar',
   data() {
     return {
       titles: ['商品', '参数', '评论', '推荐'],
-      currentIndex: 0,
+      currentIndex: 0, // 保存被选中的title的index
     };
   },
   methods: {
     titleClick(index) {
       this.currentIndex = index;
+      // 把被点击的index发送给父组件
+      this.$emit('titleClick', index);
     },
     backClick() {
+      // 路由回退
       this.$router.back();
     },
   },

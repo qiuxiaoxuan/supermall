@@ -42,13 +42,13 @@ import TabControl from 'components/content/tabControl/TabControl';
 import GoodsList from 'components/content/goods/GoodsList';
 // 引入封装好的滚动组件
 import ScrollRouter from 'components/common/scroll/ScrollRouter';
-// 引入回到顶部的组件
-import BackTop from 'components/content/backTop/BackTop';
 
 // 引入封装home中网络请求的组件
 import { getHomeMultidata, getHomeGoods } from 'network/home';
-// 引入debounce防抖函数
-import { debounce } from 'common/utils';
+// 引入混入中的全局事件监听的对象
+import { itemListenerMixin, backTopMixin } from 'common/mixin';
+// 引入一些常量
+import { TOP_DISTANCE } from 'common/const';
 
 // 引入home轮播图子组件
 import HomeSwiper from './childComps/HomeSwiper.vue';
@@ -64,11 +64,11 @@ export default {
     TabControl,
     GoodsList,
     ScrollRouter,
-    BackTop,
     HomeSwiper,
     HomeRecommmendView,
     HomeFeatureView,
   },
+  mixins: [itemListenerMixin, backTopMixin],
   data() {
     return {
       // 创建一个变量用于保存请求过来的数据
@@ -82,7 +82,6 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: 'pop', // 保存当前所展示的选项卡
-      isShowBackTop: false, // 回到顶部组件是否展示
       taboffsetTop: 0, // tabControl应该固定的位置，用于保存tabControl组件的offsetTop属性
       isTabFixed: false, // tabControl是否应该吸顶
       saveY: 0, // 保存离开home组件的时候滚动停留的位置
@@ -109,16 +108,10 @@ export default {
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
     },
-    // 回到顶部
-    backClick() {
-      // 在组件的$refs上可以访问到注册过的scroll拿到组件实例对象，然后访问这个实例上的方法scrollTo(滚动到的位置)
-      // 参数，滚动的终点的x，y坐标，以及滚动的时间
-      this.$refs.scroll.scrollTo(0, 0, 500);
-    },
     // 监听滚动事件，判断回到顶部按钮是否展示是,自定义事件获取数据，$emit('scroll',传递数据)
     contentScroll(position) {
       // 1、判断BackTop是否显示，向下滚动为负数
-      this.isShowBackTop = -position.y > 1000;
+      this.isShowBackTop = -position.y > TOP_DISTANCE;
       // 2、决定tabControl是否吸顶(position: fixed)
       this.isTabFixed = -position.y > this.taboffsetTop;
     },
@@ -169,13 +162,6 @@ export default {
     this.getHomeGoods('new');
     this.getHomeGoods('sell');
   },
-  mounted() {
-    // 监听给$bus 绑定监听item图片加载完成的自定义事件
-    const refresh = debounce(this.$refs.scroll.refresh, 50);
-    this.$bus.$on('itemimageLoad', () => {
-      refresh();
-    });
-  },
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
@@ -191,6 +177,9 @@ export default {
   deactivated() {
     // 离开组件  将离开组件时组件中滚动所在的位置保存到saveY中去
     this.saveY = this.$refs.scroll.scrollY;
+
+    // 2、取消对全局事件总线的监听
+    this.$bus.$off('itemImageLoad', this.itemImgListener);
   },
 };
 </script>

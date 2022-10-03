@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper" ref="wrapper">
-    <div class="content">
+  <div ref="wrapper">
+    <div>
       <slot></slot>
     </div>
   </div>
@@ -12,7 +12,7 @@ export default {
   name: 'ScrollRouter',
   data() {
     return {
-      scroll: null,
+      scroll: null, // 用于保存创建出来的scroll实例
     };
   },
   props: {
@@ -35,7 +35,9 @@ export default {
     },
   },
   mounted() {
-    // 1、创建BScroll对象
+    // 组件已经挂载，页面上的内容已经展示，可以调用节点
+    // 1、创建BScroll实例对象，并保存到data中的scroll中
+    // 一个节点元素，一个配置对象
     this.scroll = new BScroll(this.$refs.wrapper, {
       // 在better-scroll中必须要设置click:true;才能在内部触发点击事件
       click: true,
@@ -44,10 +46,10 @@ export default {
       pullUpLoad: this.pullUpLoad,
     });
 
-    // 2、监听滚动的位置(监听滚动对象上的事件，在合适的地方触发自定义事件)
+    // 2、监听滚动的位置
     if (this.probeType === 2 || this.probeType === 3) {
       this.scroll.on('scroll', (position) => {
-        // 触发自定义事件，传递数据
+        // 监听scroll对象上的滚动事件，然后触发自定义事件，传递当前的位置
         this.$emit('scroll', position);
       });
     }
@@ -55,30 +57,30 @@ export default {
     // 3、监听上拉事件
     if (this.pullUpLoad) {
       this.scroll.on('pullingUp', () => {
+        // 监听scroll对象，在其位于滚动的底部且仍在上拉滚动时触发自定义事件
         this.$emit('pullingUp');
       });
     }
   },
   methods: {
     scrollTo(x, y, time = 300) {
-      // 滚动中回到某个位置的方法
+      // 滚动对象中回到某个位置的方法
       this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time);
     },
     finishPullUp() {
-      // 滚动中重置上拉加载的方法
+      // 滚动对象中重置上拉加载的方法
       this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp();
     },
     refresh() {
-      // 滚动中重置滚动高度的方法
+      // 滚动对象中重置滚动高度的方法
       this.scroll && this.scroll.refresh && this.scroll.refresh();
     },
   },
   computed: {
-    // 获取滚动此时的位置Y
+    // 获取滚动此时所处的位置Y
     scrollY() {
       return this.scroll.y;
     },
   },
 };
 </script>
-<style scoped></style>

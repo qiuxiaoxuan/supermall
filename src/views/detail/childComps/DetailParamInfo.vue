@@ -22,6 +22,7 @@
 </template>
 
 <script>
+// 商品的参数信息
 export default {
   name: 'DetailParamInfo',
   props: {
