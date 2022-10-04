@@ -1,7 +1,7 @@
 import { request } from './request';
 
 // 用iid获取数据
-export const getDetial = (iid) => {
+export const getDetail = (iid) => {
   return request({
     url: '/detail',
     params: {
@@ -21,13 +21,13 @@ export const getRecommend = () => {
 export class Goods {
   constructor(itemInfo, columns, services) {
     this.title = itemInfo.title; // 商品介绍
-    this.desc = itemInfo.desc; //
+    this.desc = itemInfo.desc; // 商品描述
     this.newPrice = itemInfo.price; // 商品新价格
     this.oldPrice = itemInfo.oldPrice; // 商品原价
     this.discount = itemInfo.discountDesc; // 商品折扣
     this.columns = columns; // 包含商品销量和收藏的对象
     this.services = services;
-    this.realPrice = itemInfo.lowNowPrice;
+    this.realPrice = itemInfo.lowNowPrice; // 商品的最低价格保存为真实价格
   }
 }
 

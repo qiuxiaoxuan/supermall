@@ -15,7 +15,7 @@
       <DetailCommentInfo ref="comment" :commentInfo="commentInfo" />
       <GoodsList ref="recommend" :list="recommends" />
     </ScrollRouter>
-    <DetailBottomBar />
+    <DetailBottomBar @addCart="addToCart" />
     <BackTop @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
@@ -44,7 +44,7 @@ import GoodsList from 'components/content/goods/GoodsList';
 
 // 引入数据请求的方法和类
 import {
-  getDetial,
+  getDetail,
   Goods,
   getRecommend,
   Shop,
@@ -138,13 +138,31 @@ export default {
       // 1、判断BackTop是否显示，向下滚动为负数
       this.isShowBackTop = -position.y > TOP_DISTANCE;
     },
+    addToCart() {
+      // 1、获取购物车需要展示的信息
+      const product = {};
+      // 商品的图片，取轮播图的第一张
+      product.image = this.topImages[0];
+      // 商品的介绍，是商品信息对象中的title
+      product.title = this.goods.title;
+      // 商品的描述信息，是商品信息对象中的desc
+      product.desc = this.goods.desc;
+      // 商品的真实价格
+      product.price = this.goods.realPrice;
+      // 商品的唯一标识
+      product.iid = this.iid;
+
+      // 2、将商品添加到购物车界面
+      // 将商品信息添加到vuex中state的cartList中去
+      this.$store.dispatch('addCart', product);
+    },
   },
   created() {
     // 1、保存转入的iid
     this.iid = this.$route.params.iid;
 
     // 2、根据iid请求数据
-    getDetial(this.iid).then((response) => {
+    getDetail(this.iid).then((response) => {
       // 0、获取数据
       const data = response.result;
       // 1、获取顶部的轮播图片数据
