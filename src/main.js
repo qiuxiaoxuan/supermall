@@ -7,6 +7,10 @@ import App from './App.vue';
 import router from './router';
 // 引入vuex
 import store from './store';
+// 引入toast插件
+import toast from 'components/common/toast';
+// 安装插件
+Vue.use(toast);
 
 //关闭Vue的生产提示
 Vue.config.productionTip = false;

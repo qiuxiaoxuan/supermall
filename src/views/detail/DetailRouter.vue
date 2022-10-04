@@ -57,6 +57,8 @@ import { debounce } from 'common/utils';
 // 引入一些常量
 import { TOP_DISTANCE } from 'common/const';
 
+import { mapActions } from 'vuex';
+
 export default {
   name: 'DetailRouter',
   data() {
@@ -76,6 +78,7 @@ export default {
   },
   mixins: [itemListenerMixin, backTopMixin],
   methods: {
+    ...mapActions(['addCart']),
     // 监听商品图片是否加载完的自定义事件(DetailGoodsInfo组件触发)
     imageLoad() {
       // 重置一下可滚动的高度
@@ -154,7 +157,15 @@ export default {
 
       // 2、将商品添加到购物车界面
       // 将商品信息添加到vuex中state的cartList中去
-      this.$store.dispatch('addCart', product);
+      // 在vuex中做完某些操作想让发起者知道，可以使用返回一个Promise对象(store/index.js  文件的action中的addCart方法)
+      // mapActions mapMutations mapState mapGetters 映射操作
+      this.addCart(product).then((response) => {
+        this.$toast.show(response);
+      });
+      // 不映射的写法
+      /* this.$store.dispatch('addCart', product).then((response) => {
+        console.log(response);
+      }); */
     },
   },
   created() {
