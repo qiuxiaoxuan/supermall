@@ -36,5 +36,7 @@ export default {
   padding: 8px 10px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.75);
+  width: 200px;
+  text-align: center;
 }
 </style>

@@ -43,6 +43,7 @@ export default {
   background-color: #fff;
 }
 .tab-control-item {
+  font-weight: 700;
   flex: 1;
 }
 .tab-control-item span {

@@ -56,6 +56,15 @@ const mutations = {
   changeChecked(state, payload) {
     payload.checked = !payload.checked;
   },
+  deleteProduct(state, payload) {
+    state.cartList = state.cartList.filter((item) => item.iid !== payload.iid);
+  },
+  Increment(state, payload) {
+    payload.count++;
+  },
+  Decrement(state, payload) {
+    payload.count--;
+  },
 };
 const state = {
   // 购物车列表

@@ -20,7 +20,7 @@ export default {
   border: 2px solid #aaa;
 }
 .check {
-  border-color: red;
-  background-color: red;
+  border-color: var(--color-tint);
+  background-color: var(--color-tint);
 }
 </style>

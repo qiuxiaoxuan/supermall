@@ -15,6 +15,7 @@ import toast from 'components/common/toast';
 Vue.use(toast);
 // 安装懒加载插件，并配置图片未加载的背景图
 Vue.use(LazyLoad, {
+  // require 引入
   loading: require('assets/img/common/placeholder.png'),
 });
 

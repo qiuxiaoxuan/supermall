@@ -25,19 +25,23 @@ export default {
   name: 'DetailNavBar',
   data() {
     return {
-      titles: ['商品', '参数', '评论', '推荐'],
+      titles: ['商品', '参数', '评论', '推荐', '购物车'],
       currentIndex: 0, // 保存被选中的title的index
     };
   },
   methods: {
     titleClick(index) {
-      this.currentIndex = index;
-      // 把被点击的index发送给父组件
-      this.$emit('titleClick', index);
+      if (index !== 4) {
+        this.currentIndex = index;
+        // 把被点击的index发送给父组件
+        this.$emit('titleClick', index);
+      } else {
+        this.$router.push('/shopcart');
+      }
     },
     backClick() {
-      // 路由回退
-      this.$router.back();
+      // 回到首页
+      this.$router.replace('/home');
     },
   },
   components: {

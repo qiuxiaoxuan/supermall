@@ -9,15 +9,24 @@
     <div class="item-info">
       <div class="item-title">{{ product.title }}</div>
       <div class="item-desc">{{ product.desc }}</div>
-      <div class="info-bottom">
+      <div class="info-center">
         <div class="item-price left">¥{{ product.price }}</div>
-        <div class="item-count right">x{{ product.count }}</div>
+        <div class="item-count right">
+          <button class="button" @click="decrement">-</button>
+          {{ product.count }}
+          <button class="button" @click="increment">+</button>
+        </div>
+      </div>
+      <div class="info-bottom">
+        <button class="detail-button" @click="clickDetail">详情</button>
+        <button class="delete-button" @click="clickDelete">移除</button>
       </div>
     </div>
   </div>
 </template>
 <script>
 import CheckButton from 'components/content/checkButton/CheckButton';
+import { mapMutations } from 'vuex';
 export default {
   name: 'CartListItem',
   components: { CheckButton },
@@ -28,8 +37,35 @@ export default {
     },
   },
   methods: {
+    ...mapMutations([
+      'changeChecked',
+      'Increment',
+      'Decrement',
+      'deleteProduct',
+    ]),
+    // 勾选或取消勾选
     checkClick() {
-      this.$store.commit('changeChecked', this.product);
+      this.changeChecked(this.product);
+    },
+    // 删除商品
+    clickDelete() {
+      if (confirm('是否要移除这个商品')) this.deleteProduct(this.product);
+    },
+    // 增加数量
+    increment() {
+      this.Increment(this.product);
+    },
+    // 减少数量
+    decrement() {
+      if (this.product.count === 1) {
+        this.$toast.show('购买量不得少于一件');
+        return;
+      }
+      this.Decrement(this.product);
+    },
+    // 点击详情跳转到商品详情页
+    clickDetail() {
+      this.$router.replace('/detail/' + this.product.iid);
     },
   },
 };
@@ -37,8 +73,8 @@ export default {
 <style scoped>
 #shop-item {
   width: 100%;
+  height: 150px;
   display: flex;
-  font-size: 0;
   padding: 5px;
   border-bottom: 1px solid #ccc;
 }
@@ -77,21 +113,46 @@ export default {
   overflow: hidden;
 }
 
-.item-info .item-desc {
+.item-desc {
   font-size: 14px;
   color: #666;
   margin-top: 15px;
 }
+.info-center {
+  bottom: 45px;
+}
+.info-bottom {
+  bottom: 5px;
+  display: flex;
+}
 
+.info-center,
 .info-bottom {
   margin-top: 10px;
   position: absolute;
-  bottom: 10px;
   left: 10px;
   right: 10px;
 }
 
-.info-bottom .item-price {
+.item-price {
   color: orangered;
+  margin-right: 10px;
+}
+.button {
+  width: 20px;
+}
+.detail-button,
+.delete-button {
+  flex: 1;
+  width: 40px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  color: #fff;
+  background-color: var(--color-tint);
+  border: 0;
+}
+.delete-button {
+  background-color: red;
 }
 </style>
