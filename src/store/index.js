@@ -45,14 +45,25 @@ const mutations = {
     payload.count++;
   },
   [ADD_TO_CART](state, payload) {
+    payload.checked = true;
     state.cartList.push(payload);
+  },
+  changeChecked(state, payload) {
+    payload.checked = !payload.checked;
   },
 };
 const state = {
   // 购物车列表
   cartList: [],
 };
-const getters = {};
+const getters = {
+  cartLength(state) {
+    return state.cartList.length;
+  },
+  cartList(state) {
+    return state.cartList;
+  },
+};
 // 创建并暴露一个store对象,要使用Vuex上的Store属性
 export default new Vuex.Store({
   actions,
