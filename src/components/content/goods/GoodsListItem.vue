@@ -1,6 +1,7 @@
 <template>
   <div class="goods-list-item" @click="itemClick">
-    <img :src="showImage" alt="" @load="imageLoad" />
+    <!-- 引入图片懒加载插件并使用后，用v-lazy='图片路径'  来实现图片的懒加载-->
+    <img v-lazy="showImage" alt="" @load="imageLoad" />
     <div class="item-info">
       <p>{{ item.title }}</p>
       <span class="price">{{ item.price }}</span>
