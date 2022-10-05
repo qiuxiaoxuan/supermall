@@ -1,8 +1,6 @@
 const { defineConfig } = require('@vue/cli-service');
 module.exports = defineConfig({
-  transpileDependencies: true,
   // 配置路径别名，简化书写的同时保证了路径的正确性，脚手架3及以上
-  //
   configureWebpack: {
     resolve: {
       alias: {
@@ -13,7 +11,7 @@ module.exports = defineConfig({
         components: '@/components',
         network: '@/network',
         views: '@/views',
-        // 使用方式：在李金刚的最开始写上别名，就会从相对应的文件夹开始寻找对应文件
+        // 使用方式：在路径的最开始写上别名，就会从相对应的文件夹开始寻找对应文件
       },
     },
   },

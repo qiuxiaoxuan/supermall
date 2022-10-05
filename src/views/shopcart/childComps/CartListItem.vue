@@ -144,13 +144,14 @@ export default {
 .detail-button,
 .delete-button {
   flex: 1;
-  width: 40px;
   height: 30px;
+  margin-right: 5px;
   line-height: 30px;
   font-size: 14px;
   color: #fff;
   background-color: var(--color-tint);
   border: 0;
+  border-radius: 16px;
 }
 .delete-button {
   background-color: red;
