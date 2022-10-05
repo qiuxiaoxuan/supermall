@@ -1,31 +1,46 @@
 <template>
   <div class="bottom-bar">
     <div class="bar-item bar-left">
-      <div>
+      <div @click="clickThis">
         <i class="icon service"></i>
         <span class="text">客服</span>
       </div>
-      <div>
+      <div @click="clickThis">
         <i class="icon shop"></i>
         <span class="text">店铺</span>
       </div>
-      <div>
+      <div @click="changeStyle" :class="{ active: isActive }">
         <i class="icon select"></i>
-        <span class="text">收藏</span>
+        <span class="text" v-show="!isActive">收藏</span>
+        <span class="text" v-show="isActive">已收藏</span>
       </div>
     </div>
     <div class="bar-item bar-right">
       <div class="cart" @click="addToCart">加入购物车</div>
-      <div class="buy">购买</div>
+      <div class="buy" @click="clickThis">购买</div>
     </div>
   </div>
 </template>
 <script>
 export default {
   name: 'DetailBottomBar',
+  data() {
+    return {
+      isActive: false,
+    };
+  },
   methods: {
+    // 添加购物车
     addToCart() {
       this.$emit('addCart');
+    },
+    // 点击未开发的功能区
+    clickThis() {
+      this.$toast.show('非常抱歉，该功能尚未开发');
+    },
+    // 修改收藏图标的背景色
+    changeStyle() {
+      this.isActive = !this.isActive;
     },
   },
 };
@@ -91,5 +106,10 @@ export default {
   position: absolute;
   left: 225px;
   bottom: 20px;
+}
+
+.active {
+  background-color: var(--color-tint);
+  color: #fff;
 }
 </style>

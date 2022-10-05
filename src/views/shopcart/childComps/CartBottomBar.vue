@@ -1,15 +1,11 @@
 <template>
   <div class="bottom-bar">
-    <div class="check-content">
-      <CheckButton
-        class="check-button"
-        :is-checked="isSelectAll"
-        @click.native="checkClick"
-      />
+    <div class="check-content" @click="checkClick">
+      <CheckButton class="check-button" :is-checked="isSelectAll" />
       <span>全选</span>
     </div>
     <div class="price">合计:{{ totalPrice }}</div>
-    <div class="calculate" @click="calcClick">去计算({{ checkedLength }})</div>
+    <div class="calculate" @click="calcClick">去结算({{ checkedLength }})</div>
   </div>
 </template>
 <script>
@@ -39,8 +35,10 @@ export default {
     },
     calcClick() {
       if (!this.cartList.find((item) => item.checked)) {
-        // m没有选择任何商品的时候弹窗
-        this.$toast.show('请选择购买的商品', 2000);
+        // 没有选择任何商品的时候弹窗
+        this.$toast.show('请选择需要购买的商品', 2000);
+      } else {
+        this.$toast.show(`当前商品总价格为${this.totalPrice}￥`);
       }
     },
   },

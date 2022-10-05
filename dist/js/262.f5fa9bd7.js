@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunksupermall"]=self["webpackChunksupermall"]||[]).push([[262],{6262:function(u,e,n){n.r(e),n.d(e,{default:function(){return f}});var r=function(){var u=this;u._self._c;return u._m(0)},l=[function(){var u=this,e=u._self._c;return e("div",[e("h2",[u._v("分类")]),e("div",[u._v("功能代开发，敬请期待。。。")])])}],t={name:"CategoryRouter"},s=t,a=n(1001),c=(0,a.Z)(s,r,l,!1,null,null,null),f=c.exports}}]);
+//# sourceMappingURL=262.f5fa9bd7.js.map
