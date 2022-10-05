@@ -8,7 +8,7 @@
     >
       <div class="item" v-for="item in subcategories.list" :key="item.acm">
         <a :href="item.link">
-          <img class="item-img" :src="item.image" alt="" />
+          <img class="item-img" :src="item.image" alt="" @load="imageLoad" />
           <div class="item-text">{{ item.title }}</div>
         </a>
       </div>
@@ -28,6 +28,14 @@ export default {
     subcategories: {
       type: Object,
       default: () => {},
+    },
+  },
+  methods: {
+    imageLoad() {
+      if (!this.isLoad) {
+        this.$emit('ImageLoad');
+        this.isLoad = true;
+      }
     },
   },
 };

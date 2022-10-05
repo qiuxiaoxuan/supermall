@@ -5,17 +5,38 @@
     <div class="content">
       <!-- 展示左侧的大分类组件 -->
       <TabMenu :categories="categories" @selectItem="selectItem" />
-      <!-- 选项卡组件 -->
-
-      <ScrollRouter id="tab-content" ref="scroll">
-        <!-- 展示右侧对应每一个大分类的小分类 -->
-        <TabContentCategory :subcategories="showSubcategory" />
+      <div class="show-scroll">
         <!-- 选项卡组件 -->
-        <TabControl :titles="['综合', '新品', '销量']" @tabClick="tabClick" />
-        <!-- 每一个分类下的商品 -->
-        <GoodsList :list="showCategoryDetail" />
-      </ScrollRouter>
+        <TabControl
+          :titles="['综合', '新品', '销量']"
+          ref="tabControl1"
+          @tabClick="tabClick"
+          class="tab-control"
+          v-show="isTabFixed"
+        />
+        <ScrollRouter
+          id="tab-content"
+          ref="scroll"
+          @scroll="contentScroll"
+          :probe-type="3"
+        >
+          <!-- 展示右侧对应每一个大分类的小分类 -->
+          <TabContentCategory
+            :subcategories="showSubcategory"
+            @ImageLoad="ImageLoad"
+          />
+          <!-- 选项卡组件 -->
+          <TabControl
+            :titles="['综合', '新品', '销量']"
+            @tabClick="tabClick"
+            ref="tabControl2"
+          />
+          <!-- 每一个分类下的商品 -->
+          <GoodsList :list="showCategoryDetail" />
+        </ScrollRouter>
+      </div>
     </div>
+    <BackTop @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
 <script>
@@ -33,6 +54,8 @@ import {
   getSubcategory,
   getCategoryDetail,
 } from 'network/category';
+// 引入混入中的全局事件监听的对象和回到顶部对象
+import { itemListenerMixin, backTopMixin } from 'common/mixin';
 
 export default {
   name: 'CategoryRouter',
@@ -50,16 +73,18 @@ export default {
       categoryData: {}, // 保存所有类别的信息(16个)
       currentIndex: -1, // 保存当前选中的类别index(综合，新品，销量)
       currentType: 'pop', // 保存当前所展示的选项卡
+      taboffsetTop: 0, // tabControl应该固定的位置，用于保存tabControl组件的offsetTop属性
+      isTabFixed: false, // tabControl是否应该吸顶
     };
+  },
+  mixins: [itemListenerMixin, backTopMixin],
+  destroyed() {
+    // 销毁组件的时候取消对全局事件总线的监听
+    this.$bus.$off('itemImageLoad', this.itemImgListener);
   },
   created() {
     // 1.请求分类数据
     this.getCategory();
-
-    // 2.监听图片加载完成
-    this.$bus.$on('itemImageLoad', () => {
-      this.$refs.scroll.refresh();
-    });
   },
   computed: {
     showSubcategory() {
@@ -74,6 +99,20 @@ export default {
     },
   },
   methods: {
+    contentScroll(position) {
+      // 1、判断BackTop是否显示，向下滚动为负数
+      this.isShowBackTop = -position.y > 500;
+      // 2、决定tabControl是否吸顶(position: fixed)
+      this.isTabFixed = -position.y > this.taboffsetTop;
+    },
+    // 监听上方小分类组件的图片是否加载完毕(自定义事件)
+    ImageLoad() {
+      // 获取tabControl的offsetTop属性
+      // 所有的组件都有一个属性$el:用于获取组件中的元素
+      console.log('100');
+      console.log(this.$refs.tabControl2.$el.offsetTop);
+      this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop;
+    },
     // 切换选项卡
     tabClick(index) {
       // 因为不是数组，所以只能用Switch判断语句
@@ -88,6 +127,9 @@ export default {
           this.currentType = 'sell';
           break;
       }
+      // 让两个tabControl的展示的选项一样
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
 
     getCategory() {
@@ -164,9 +206,14 @@ export default {
   display: flex;
   overflow: hidden;
 }
-
+.show-scroll {
+  flex: 1;
+}
 #tab-content {
   height: 100%;
-  flex: 1;
+}
+.tab-control {
+  position: relative;
+  z-index: 9;
 }
 </style>
