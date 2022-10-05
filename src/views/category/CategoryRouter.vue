@@ -109,8 +109,6 @@ export default {
     ImageLoad() {
       // 获取tabControl的offsetTop属性
       // 所有的组件都有一个属性$el:用于获取组件中的元素
-      console.log('100');
-      console.log(this.$refs.tabControl2.$el.offsetTop);
       this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
     // 切换选项卡

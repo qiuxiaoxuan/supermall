@@ -17,7 +17,6 @@ export default {
 <style scoped>
 .empty {
   margin-top: 64px;
-  border: 2px solid var(--color-tint);
   border-radius: 12px;
   padding: 10px;
 }

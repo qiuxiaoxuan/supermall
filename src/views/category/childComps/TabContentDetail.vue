@@ -1,10 +1,6 @@
 <template>
   <GridView>
-    <GoodsListItem
-      v-for="(item, index) in categoryDetail"
-      :key="index"
-      :goods="item"
-    ></GoodsListItem>
+    <GoodsListItem v-for="item in categoryDetail" :key="item" :goods="item" />
   </GridView>
 </template>
 

@@ -36,12 +36,12 @@ export default {
         // 把被点击的index发送给父组件
         this.$emit('titleClick', index);
       } else {
-        this.$router.push('/shopcart');
+        this.$router.replace('/shopcart');
       }
     },
     backClick() {
       // 回到首页
-      this.$router.replace('/home');
+      this.$router.back();
     },
   },
   components: {

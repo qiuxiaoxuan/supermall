@@ -65,7 +65,7 @@ export default {
     },
     // 点击详情跳转到商品详情页
     clickDetail() {
-      this.$router.replace('/detail/' + this.product.iid);
+      this.$router.push('/detail/' + this.product.iid);
     },
   },
 };
