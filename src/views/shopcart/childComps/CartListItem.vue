@@ -49,7 +49,7 @@ export default {
     },
     // 删除商品
     clickDelete() {
-      if (confirm('是否要移除这个商品')) this.deleteProduct(this.product);
+      this.deleteProduct(this.product);
     },
     // 增加数量
     increment() {
