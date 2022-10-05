@@ -1,7 +1,7 @@
 <template>
   <div class="goods-list-item" @click="itemClick">
     <!-- 引入图片懒加载插件并使用后，用v-lazy='图片路径'  来实现图片的懒加载-->
-    <img v-lazy="showImage" alt="" @load="imageLoad" />
+    <img v-lazy="showImage" alt="" @load="imageLoad" :key="showImage" />
     <div class="item-info">
       <p>{{ item.title }}</p>
       <span class="price">{{ item.price }}</span>
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     showImage() {
-      return this.item.image || this.item.show.img;
+      return this.item.img || this.item.image || this.item.show.img;
     },
   },
 };

@@ -31,30 +31,42 @@ const routes = [
     // 重定向，默认展示的路由
     path: '',
     redirect: '/home',
+    meta: { title: '主页' },
   },
   {
     path: '/home',
     component: HomeRouter,
+    meta: { title: '主页' },
   },
   {
     path: '/category',
     component: CategoryRouter,
+    meta: { title: '分类' },
   },
   {
     path: '/shopcart',
     component: ShopcartRouter,
+    meta: { title: '购物车' },
   },
   {
     path: '/profile',
     component: ProfileRouter,
+    meta: { title: '我的' },
   },
   {
     path: '/detail/:iid',
     component: DetailRouter,
+    meta: { title: '详情' },
   },
 ];
-// 创建并暴露路由router
-export default new VueRouter({
+// 创建路由router
+const router = new VueRouter({
   mode: 'history', // 路由的工作方式为history模式
   routes, // 引入路由表
 });
+// 全局后置路由守卫————初始化的时候被调用、每次路由切换之后被调用
+router.afterEach((to) => {
+  // 在切换组件的时候更换title
+  document.title = to.meta.title || '购物商城';
+});
+export default router;
